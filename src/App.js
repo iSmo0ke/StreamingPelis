@@ -1,29 +1,43 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Header from './components/shared/header';
-import Footer from './components/shared/footer';
-import LoadingScreen from './components/screens/loadingScreen';
-import ErrorScreen from './components/screens/errorScreen';
-import Home from './components/screens/home';
-import Series from './components/screens/series';
-import Movies from './components/screens/movies';
+import React, { useState } from 'react';
+import './App.css';
+import { Provider } from 'react'; 
+import store from "./redux/store";
+import Header from './components/shared/header/header';
+import Footer from './components/shared/footer/footer';
+import Home from './components/screens/Home/home';
+import PopularSeries from './components/screens/series/series';
+import PopularMovies from './components/screens/movies/movies';
 
 function App() {
+
+  const [currentScreen, setCurrentScreen] = useState('home');
+
+  const handleHomeClick = () => {
+    setCurrentScreen('home');
+  }
+
+  const handleSeriesClick = () => {
+    setCurrentScreen('series');
+  };
+
+  const handleMoviesClick = () => {
+    setCurrentScreen('movies');
+  }
+
+
   return (
-    <Router>
-      <div className="App">
-        <Header />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/series" component={Series} />
-          <Route exact path="/movies" component={Movies} />
-          <Route path="/loading" component={LoadingScreen} />
-          <Route path="/error" component={ErrorScreen} />
-          <Route component={ErrorScreen} /> {/* Ruta predeterminada para manejar rutas no encontradas */}
-        </Switch>
-        <Footer />
-      </div>
-    </Router>
+    <Provider store={store}>
+    <div className="App">
+      <Header handleHomeClick={handleHomeClick}/>
+      
+      {currentScreen === 'home' && <Home handleSeriesClick={handleSeriesClick} handleMoviesClick={handleMoviesClick}/>}
+      {currentScreen === 'series' && <PopularSeries/>}
+      {currentScreen === 'movies' && <PopularMovies/>} 
+      
+
+      <Footer/>
+    </div>
+    </Provider>
   );
 }
 
